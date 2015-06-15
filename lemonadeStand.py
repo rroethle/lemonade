@@ -77,24 +77,29 @@ class LemonStand:
             except:
                 print ('Please enter a number between 0 and $100')
                 continue
-        if selling_price < 3:
+        if selling_price < 4:
             max_number_sold = 500
-        elif selling_price < 6:
-            prob_max_sold = random.randrange(4,11)/10
-            max_number_sold = round((250*prob_max_sold),1)
-        elif selling_price < 10:
-            prob_max_sold = random.randrange(0,4)/10
-            max_number_sold = round((100 * prob_max_sold),1)
+        elif selling_price < 8:
+            prob_max_sold_chance = float(random.randrange(4,11))
+            prob_max_sold = float(prob_max_sold_chance/10.0)
+            max_number_sold = round((250*prob_max_sold),0)
+            print max_number_sold
+        elif selling_price < 12:
+            prob_max_sold_chance = float(random.randrange(0,4))
+            prob_max_sold = float(prob_max_sold_chance/10.0)
+            max_number_sold = round((100 * prob_max_sold),0)
         else:
-            prob_max_sold = random.randrange(0,100)/1000
+            prob_max_sold_chance = float(random.randrange(0,100))
+            prob_max_sold = float(prob_max_sold_chance/1000)
             max_number_sold = round((5 * prob_max_sold),0)
         if self.weather_add_on == "sunny":
-            max_number_sold = round((max_number_sold * 1.5),1)
+            max_number_sold = round((max_number_sold * 1.5),0)
         elif self.weather_add_on == "rainy":
-            max_number_sold = round((max_number_sold * .75),1)
-        temp_adder = (self.temperature - 70) / 100
+            max_number_sold = round((max_number_sold * .75),0)
+        temp_adder = float((self.temperature - 70) / 100.0)
         temp_multiplier = 1 + temp_adder
-        max_number_sold = round((temp_multiplier * max_number_sold),1)
+        max_number_sold = round((temp_multiplier * max_number_sold),0)
+        print max_number_sold
         if max_number_sold == 0 or max_number_sold == 1:
             final_demand_cups = 0
         else:
@@ -102,6 +107,7 @@ class LemonStand:
                 print "YOU HIT THE JACKPOT!"
                 self.cups_available += 100000
             final_demand_cups = random.randrange(0, max_number_sold)
+            print "Good Chance",final_demand_cups
         if self.cups_available - final_demand_cups >= 0:
             self.cups_available = self.cups_available - final_demand_cups
             money_made_day = round(final_demand_cups*selling_price,2)
@@ -111,6 +117,11 @@ class LemonStand:
             print "You have sold " + str(final_demand_cups) + " cups and made ${:,.2f}".format(money_made_day)
             print('============================' + '\n')
             self.day += 1
+            self.money -= 25
+            self.weather_add_on = random.choice(["sunny","rainy","cloudy"])
+            self.temperature = random.randrange(40, 100)
+            self.lemonade_cost = random.choice([.10,.25,.50,.75,1,1.5,2])
+
         else:
             money_made_day = round(self.cups_available*selling_price,2)
             self.money += money_made_day
@@ -122,6 +133,7 @@ class LemonStand:
         self.money -= 25
         self.weather_add_on = random.choice(["sunny","rainy","cloudy"])
         self.temperature = random.randrange(40, 100)
+        self.lemonade_cost = random.choice([.10,.25,.50,.75,1,1.5,2])
 
 
 def check_day():
